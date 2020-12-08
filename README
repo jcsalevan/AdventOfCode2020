@@ -1,0 +1,14 @@
+Advent of Code 2020
+JC Salevan, December 2020
+
+This is a pile of hastily-written little code snippets. Lots of them are UGLY, 
+or slow, or brute-forced, or just gross. That's ok! The point, for me, is just 
+solving the puzzle and enjoying myself.
+
+Each day, there's a new puzzle, with input (a .txt file) and its associated code 
+(a .R script). Day 1 is AoC1, Day 2 is AoC2, etc.
+
+For more info about this whole endeavor, see:
+  https://adventofcode.com/ for the main site, 
+  https://adventofcode.com/2020 for the 2020 puzzles, and
+  https://adventofcode.com/2020/about for the 2020 about page.
