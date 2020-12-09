@@ -24,7 +24,7 @@ AoC7 = read_table("AoC7.txt", col_names = F, skip_empty_rows = F) %>%
          contents_bag = ifelse(contents_bag == "other", "none", contents_bag),
          contents_n = as.integer(contents_n)) 
 
-# ok cute, I have a nice data frame. done in, as usual, a way with too many 
+# ok cute, I have a nice data frame. done in, as usual, a way with mantoo many 
 # steps, but whatever
 
 # part 1 ----
@@ -72,13 +72,10 @@ AoC7_2 = AoC7 %>%
   mutate(sg9 = bag %in% filter(.,sg8)$contents_bag) %>%
   # mutate(sg10 = bag %in% filter(.,sg9)$contents_bag) #9 is the final level!
   filter(sg0+sg1+sg2+sg3+sg4+sg5+sg6+sg7+sg8+sg9 > 0) %>%
-  mutate(contents_n = ifelse(contents_n == 0, NA_integer_, contents_n))
+  mutate(contents_n = ifelse(contents_n == 0, NA_integer_, contents_n),
+         contents_bag = ifelse(contents_bag == "none", NA_character_, contents_bag))
 
 # ok so there's 9 levels below shiny gold
-
-AoC7_2a = AoC7_2 %>%
-  group_by(bag) %>%
-  summarize(n_tot = sum(contents_n, na.rm = T))
 
 sg0 = AoC7_2 %>% filter(sg0) %>% select(bag, contents_n, contents_bag)
 sg1 = AoC7_2 %>% filter(sg1) %>% select(bag, contents_n, contents_bag)
@@ -109,32 +106,11 @@ AoC7_2_tree = tibble(l0 = "shiny gold") %>%
   left_join(sg7, by = c("l7" = "bag")) %>% rename(l8 = contents_bag,
                                               l8n = contents_n) %>%
   left_join(sg8, by = c("l8" = "bag")) %>% rename(l9 = contents_bag,
-                                              l9n = contents_n) %>%
-  mutate(tot_branch = case_when(
-    !is.na(l9n) ~ l1n * l2n * l3n * l4n * l5n * l6n * l7n * l8n * l9n,
-    !is.na(l8n) ~ l1n * l2n * l3n * l4n * l5n * l6n * l7n * l8n,
-    !is.na(l7n) ~ l1n * l2n * l3n * l4n * l5n * l6n * l7n,
-    !is.na(l6n) ~ l1n * l2n * l3n * l4n * l5n * l6n,
-    !is.na(l5n) ~ l1n * l2n * l3n * l4n * l5n,
-    !is.na(l4n) ~ l1n * l2n * l3n * l4n,
-    !is.na(l3n) ~ l1n * l2n * l3n,
-    !is.na(l2n) ~ l1n * l2n,
-    !is.na(l1n) ~ l1n
-  ))
-  
+                                              l9n = contents_n)
 
-answer1 = AoC7_2_tree %>% summarize(n_tot = sum(tot_branch)) # too low, 65822
 
-answer2 = AoC7_2_tree %>%
-  ungroup() %>%
-  summarize(nbags = sum(l1n, na.rm = T) + sum(l2n, na.rm = T) + 
-              sum(l3n, na.rm = T) + sum(l4n, na.rm = T) + 
-              sum(l5n, na.rm = T) + sum(l6n, na.rm = T) + 
-              sum(l7n, na.rm = T) + sum(l8n, na.rm = T) + 
-              sum(l9n, na.rm = T))
 
-answer = answer1 + answer2
-
-answer
-
+# ok it should be 80902.
+#seventh try, 105803
+# no basis: 96985
 
