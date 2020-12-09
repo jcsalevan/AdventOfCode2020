@@ -4,7 +4,6 @@
 
 library(tidyverse)
 library(readr)
-library(network)
 
 rm(list = ls(pattern = "AoC"))
 
@@ -77,40 +76,40 @@ AoC7_2 = AoC7 %>%
 
 # ok so there's 9 levels below shiny gold
 
-sg0 = AoC7_2 %>% filter(sg0) %>% select(bag, contents_n, contents_bag)
-sg1 = AoC7_2 %>% filter(sg1) %>% select(bag, contents_n, contents_bag)
-sg2 = AoC7_2 %>% filter(sg2) %>% select(bag, contents_n, contents_bag)
-sg3 = AoC7_2 %>% filter(sg3) %>% select(bag, contents_n, contents_bag)
-sg4 = AoC7_2 %>% filter(sg4) %>% select(bag, contents_n, contents_bag)
-sg5 = AoC7_2 %>% filter(sg5) %>% select(bag, contents_n, contents_bag)
-sg6 = AoC7_2 %>% filter(sg6) %>% select(bag, contents_n, contents_bag)
-sg7 = AoC7_2 %>% filter(sg7) %>% select(bag, contents_n, contents_bag)
-sg8 = AoC7_2 %>% filter(sg8) %>% select(bag, contents_n, contents_bag)
-sg9 = AoC7_2 %>% filter(sg9) %>% select(bag, contents_n, contents_bag)
+sg0 = AoC7_2 %>% filter(sg0) %>% select(l0 = bag, l1n = contents_n, l1 = contents_bag)
+sg1 = AoC7_2 %>% filter(sg1) %>% select(l1 = bag, l2n = contents_n, l2 = contents_bag)
+sg2 = AoC7_2 %>% filter(sg2) %>% select(l2 = bag, l3n = contents_n, l3 = contents_bag)
+sg3 = AoC7_2 %>% filter(sg3) %>% select(l3 = bag, l4n = contents_n, l4 = contents_bag)
+sg4 = AoC7_2 %>% filter(sg4) %>% select(l4 = bag, l5n = contents_n, l5 = contents_bag)
+sg5 = AoC7_2 %>% filter(sg5) %>% select(l5 = bag, l6n = contents_n, l6 = contents_bag)
+sg6 = AoC7_2 %>% filter(sg6) %>% select(l6 = bag, l7n = contents_n, l7 = contents_bag)
+sg7 = AoC7_2 %>% filter(sg7) %>% select(l7 = bag, l8n = contents_n, l8 = contents_bag)
+sg8 = AoC7_2 %>% filter(sg8) %>% select(l8 = bag, l9n = contents_n, l9 = contents_bag)
 
 AoC7_2_tree = tibble(l0 = "shiny gold") %>%
-  left_join(sg0, by = c("l0" = "bag")) %>% rename(l1 = contents_bag,
-                                              l1n = contents_n) %>%
-  left_join(sg1, by = c("l1" = "bag")) %>% rename(l2 = contents_bag,
-                                              l2n = contents_n) %>%
-  left_join(sg2, by = c("l2" = "bag")) %>% rename(l3 = contents_bag,
-                                              l3n = contents_n) %>%
-  left_join(sg3, by = c("l3" = "bag")) %>% rename(l4 = contents_bag,
-                                              l4n = contents_n) %>%
-  left_join(sg4, by = c("l4" = "bag")) %>% rename(l5 = contents_bag,
-                                              l5n = contents_n) %>%
-  left_join(sg5, by = c("l5" = "bag")) %>% rename(l6 = contents_bag,
-                                              l6n = contents_n) %>%
-  left_join(sg6, by = c("l6" = "bag")) %>% rename(l7 = contents_bag,
-                                              l7n = contents_n) %>%
-  left_join(sg7, by = c("l7" = "bag")) %>% rename(l8 = contents_bag,
-                                              l8n = contents_n) %>%
-  left_join(sg8, by = c("l8" = "bag")) %>% rename(l9 = contents_bag,
-                                              l9n = contents_n)
+  left_join(sg0) %>%
+  left_join(sg1) %>%
+  left_join(sg2) %>% 
+  left_join(sg3) %>%
+  left_join(sg4) %>%
+  left_join(sg5) %>%
+  left_join(sg6) %>%
+  left_join(sg7) %>%
+  left_join(sg8) 
 
+# sum the products of those s1n, s2n, etc. for rows that are unique column subsets...
+answer = 0
+for (ii in seq(3,19,2)) {
 
+s1 = AoC7_2_tree[1:ii] %>%
+  distinct() %>%
+  rowwise() %>%
+  mutate(rowprod = prod(c_across(ends_with("n")))) %>%
+  ungroup() %>%
+  summarize(sum = sum(rowprod, na.rm = T))
 
-# ok it should be 80902.
-#seventh try, 105803
-# no basis: 96985
+answer = answer + s1$sum
+}
+answer
 
+# ta da! 80902
